@@ -8,7 +8,9 @@ import com.github.catvod.bean.Result;
 import com.github.catvod.bean.Vod;
 import com.github.catvod.crawler.Spider;
 import com.github.catvod.net.OkHttp;
+import com.github.catvod.utils.Json;
 import com.github.catvod.utils.Util;
+import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -28,6 +30,7 @@ import java.util.Map;
 public class JustLive extends Spider {
 
     private String siteUrl = "http://live.yj1211.work";
+    private String feiYangUrl = "http://106.55.94.206:35455";
 
     private Map<String, String> getHeader() {
         Map<String, String> header = new HashMap<>();
@@ -37,7 +40,13 @@ public class JustLive extends Spider {
 
     @Override
     public void init(Context context, String extend) throws Exception {
-        if (!extend.isEmpty()) siteUrl = extend;
+        JsonObject ext = Json.safeObject(extend);
+        if (ext.has("siteUrl")) {
+            siteUrl = ext.get("siteUrl").getAsString();
+        }
+        if (ext.has("feiYangUrl")) {
+            feiYangUrl = ext.get("feiYangUrl").getAsString();
+        }
     }
 
     @Override
@@ -45,7 +54,8 @@ public class JustLive extends Spider {
         List<Class> classes = new ArrayList<>();
         List<String> typeIds = Arrays.asList("网游", "手游", "单机", "娱乐", "其他");
         List<String> typeNames = Arrays.asList("网游", "手游", "单机", "娱乐", "其他");
-        for (int i = 0; i < typeIds.size(); i++) classes.add(new Class(typeIds.get(i), typeNames.get(i)));
+        for (int i = 0; i < typeIds.size(); i++)
+            classes.add(new Class(typeIds.get(i), typeNames.get(i)));
         String f = "{\"网游\": [{\"key\": \"class\", \"name\": \"类型\", \"value\": [{\"n\": \"英雄联盟\", \"v\": \"英雄联盟\"},  {\"n\": \"无畏契约\", \"v\": \"无畏契约\"}, {\"n\": \"CS:GO\", \"v\": \"CS:GO\"}, {\"n\": \"APEX英雄\", \"v\": \"APEX英雄\"}, {\"n\": \"永劫无间\", \"v\": \"永劫无间\"}, {\"n\": \"穿越火线\", \"v\": \"穿越火线\"}, {\"n\": \"命运方舟\", \"v\": \"命运方舟\"}, {\"n\": \"DOTA2\", \"v\": \"DOTA2\"}, {\"n\": \"吃鸡行动\", \"v\": \"吃鸡行动\"},  {\"n\": \"逃离塔科夫\", \"v\": \"逃离塔科夫\"}, {\"n\": \"传奇\", \"v\": \"传奇\"}, {\"n\": \"DNF\", \"v\": \"DNF\"}, {\"n\": \"卡拉彼丘\", \"v\": \"卡拉彼丘\"}, {\"n\": \"幕后高手\", \"v\": \"幕后高手\"}, {\"n\": \"生死狙击2\", \"v\": \"生死狙击2\"}, {\"n\": \"洛奇英雄传\", \"v\": \"洛奇英雄传\"}, {\"n\": \"最终幻想14\", \"v\": \"最终幻想14\"}, {\"n\": \"重生边缘\", \"v\": \"重生边缘\"}, {\"n\": \"星际战甲\", \"v\": \"星际战甲\"}, {\"n\": \"梦三国\", \"v\": \"梦三国\"}, {\"n\": \"英魂之刃\", \"v\": \"英魂之刃\"}, {\"n\": \"剑网3\", \"v\": \"剑网3\"}]}], \"手游\": [{\"key\": \"class\", \"name\": \"类型\", \"value\": [{\"n\": \"王者荣耀\", \"v\": \"王者荣耀\"}, {\"n\": \"和平精英\", \"v\": \"和平精英\"}, {\"n\": \"原神\", \"v\": \"原神\"}, {\"n\": \"崩坏：星穹铁道\", \"v\": \"崩坏：星穹铁道\"}, {\"n\": \"第五人格\", \"v\": \"第五人格\"}, {\"n\": \"LOL手游\", \"v\": \"LOL手游\"}, {\"n\": \"明日方舟\", \"v\": \"明日方舟\"}, {\"n\": \"黎明觉醒：生机\", \"v\": \"黎明觉醒：生机\"}, {\"n\": \"蛋仔派对\", \"v\": \"蛋仔派对\"}, {\"n\": \"冒险岛手游\", \"v\": \"冒险岛手游\"}, {\"n\": \"闪耀！优俊少女\", \"v\": \"闪耀！优俊少女\"}, {\"n\": \"斯露德\", \"v\": \"斯露德\"}, {\"n\": \"千年之旅\", \"v\": \"千年之旅\"}, {\"n\": \"白夜极光\", \"v\": \"白夜极光\"}, {\"n\": \"逆水寒手游\", \"v\": \"逆水寒手游\"}, {\"n\": \"率土之滨\", \"v\": \"率土之滨\"}, {\"n\": \"月圆之夜\", \"v\": \"月圆之夜\"}]}],\"单机\": [{\"key\": \"class\", \"name\": \"类型\", \"value\": [{\"n\": \"主机游戏\", \"v\": \"主机游戏\"}, {\"n\": \"我的世界\", \"v\": \"我的世界\"}, {\"n\": \"独立游戏\", \"v\": \"独立游戏\"}, {\"n\": \"怀旧游戏\", \"v\": \"怀旧游戏\"}, {\"n\": \"猛兽派对\", \"v\": \"猛兽派对\"}, {\"n\": \"星空\", \"v\": \"星空\"}, {\"n\": \"塞尔达传说\", \"v\": \"塞尔达传说\"}, {\"n\": \"苍翼：混沌效应\", \"v\": \"苍翼：混沌效应\"}, {\"n\": \"命运2\", \"v\": \"命运2\"}, {\"n\": \"收获日3\", \"v\": \"收获日3\"}, {\"n\": \"机战佣兵VI 境界天火\", \"v\": \"机战佣兵VI 境界天火\"}, {\"n\": \"暗黑破坏神Ⅳ\", \"v\": \"暗黑破坏神Ⅳ\"}, {\"n\": \"匹诺曹的谎言\", \"v\": \"匹诺曹的谎言\"}, {\"n\": \"博德之门3\", \"v\": \"博德之门3\"}, {\"n\": \"绝世好武功\", \"v\": \"绝世好武功\"}, {\"n\": \"恐怖游戏\", \"v\": \"恐怖游戏\"}, {\"n\": \"Dark and Darker\", \"v\": \"Dark and Darker\"}, {\"n\": \"Warlander\", \"v\": \"Warlander\"}, {\"n\": \"FORZA 极限竞速\", \"v\": \"FORZA 极限竞速\"}, {\"n\": \"边境\", \"v\": \"边境\"}, {\"n\": \"生化危机\", \"v\": \"生化危机\"}]}], \"娱乐\": [{\"key\": \"class\", \"name\": \"类型\", \"value\": [{\"n\": \"聊天室\", \"v\": \"聊天室\"}, {\"n\": \"视频唱见\", \"v\": \"视频唱见\"}, {\"n\": \"萌宅领域\", \"v\": \"萌宅领域\"}, {\"n\": \"视频聊天\", \"v\": \"视频聊天\"}, {\"n\": \"舞见\", \"v\": \"舞见\"}, {\"n\": \"唱见电台\", \"v\": \"唱见电台\"}, {\"n\": \"聊天电台\", \"v\": \"聊天电台\"}, {\"n\": \"甜宠电台\", \"v\": \"甜宠电台\"}, {\"n\": \"TopStar\", \"v\": \"TopStar\"}, {\"n\": \"虚拟Singer\", \"v\": \"虚拟Singer\"}, {\"n\": \"虚拟Gamer\", \"v\": \"虚拟Gamer\"}, {\"n\": \"虚拟声优\", \"v\": \"虚拟声优\"}, {\"n\": \"虚拟日常\", \"v\": \"虚拟日常\"}, {\"n\": \"星秀\", \"v\": \"星秀\"}]}], \"其他\": [{\"key\": \"class\", \"name\": \"类型\", \"value\": [{\"n\": \"生活分享\", \"v\": \"生活分享\"}, {\"n\": \"户外\", \"v\": \"户外\"}, {\"n\": \"日常\", \"v\": \"日常\"}, {\"n\": \"情感\", \"v\": \"情感\"}, {\"n\": \"运动\", \"v\": \"运动\"}, {\"n\": \"搞笑\", \"v\": \"搞笑\"}, {\"n\": \"手工绘画\", \"v\": \"手工绘画\"}, {\"n\": \"萌宠\", \"v\": \"萌宠\"}, {\"n\": \"美食\", \"v\": \"美食\"}, {\"n\": \"时尚\", \"v\": \"时尚\"}, {\"n\": \"社科法律心理\", \"v\": \"社科法律心理\"}, {\"n\": \"人文历史\", \"v\": \"人文历史\"}, {\"n\": \"校园学习\", \"v\": \"校园学习\"}, {\"n\": \"职场·技能\", \"v\": \"职场·技能\"}, {\"n\": \"科技\", \"v\": \"科技\"}]}]}";
         JSONObject filterConfig = new JSONObject(f);
         String content = OkHttp.string(siteUrl + "/api/live/getRecommend?page=1&size=20", getHeader());
@@ -95,6 +105,21 @@ public class JustLive extends Spider {
         return Result.string(list);
     }
 
+    // 通用方法：提取指定参数的值
+    private static String extractParameter(String input, String paramName) {
+        String prefix = paramName + "=";
+        int startIndex = input.indexOf(prefix);
+        if (startIndex != -1) {
+            startIndex += prefix.length();
+            int endIndex = input.indexOf('&', startIndex);
+            if (endIndex == -1) {
+                endIndex = input.length();
+            }
+            return input.substring(startIndex, endIndex);
+        }
+        return null;
+    }
+
     @Override
     public String detailContent(List<String> ids) throws Exception {
         String getRoomInfo = siteUrl + "/api/live/getRoomInfo?" + ids.get(0);
@@ -125,6 +150,13 @@ public class JustLive extends Spider {
             }
             vodItems.add(TextUtils.join("#", episodeItems));
         }
+        String id = ids.get(0);
+        // 提取 platform 和 roomId
+        String platform = extractParameter(id, "platform");
+        String roomId = extractParameter(id, "roomId");
+
+        lineNames.add("小肥羊");
+        vodItems.add(feiYangUrl+"/" + platform + "/" + roomId);
         String vod_play_from = TextUtils.join("$$$", lineNames);
         String vod_play_urls = TextUtils.join("$$$", vodItems);
         JSONObject data = new JSONObject(content1).getJSONObject("data");
