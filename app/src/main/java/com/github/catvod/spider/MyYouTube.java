@@ -233,7 +233,7 @@ public class MyYouTube extends Spider {
                     JSONObject playlistItem = playlistItems.getJSONObject(i);
                     JSONObject videoSnippet = playlistItem.getJSONObject("snippet");
                     String videoId = videoSnippet.getJSONObject("resourceId").getString("videoId");
-                    String videoTitle = videoSnippet.getString("title");
+                    String videoTitle = cleanTitle(videoSnippet.getString("title"));
                     playUrls.add(videoTitle + "$" + videoId);
                 }
 
@@ -248,7 +248,7 @@ public class MyYouTube extends Spider {
 
                 // 设置播放地址
                 vod.setVodPlayFrom("YouTube");
-                vod.setVodPlayUrl(snippet.getString("title") + "$" + id);
+                vod.setVodPlayUrl(cleanTitle(snippet.getString("title")) + "$" + id);
             }
 
             return Result.string(vod);
@@ -282,6 +282,10 @@ public class MyYouTube extends Spider {
             SpiderDebug.log("获取播放地址失败：" + e.getMessage());
             return Result.get().string();
         }
+    }
+
+    private String cleanTitle(String title) {
+        return title.replaceAll("[$#]", ""); // 使用正则表达式移除所有 $ 和 # 字符
     }
 
 }
