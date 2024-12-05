@@ -3,4 +3,4 @@
 *build
 /local.properties
 
-jar/tes.js
+/jar/*.js
