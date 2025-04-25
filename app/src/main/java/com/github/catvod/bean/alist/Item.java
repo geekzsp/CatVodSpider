@@ -114,7 +114,7 @@ public class Item {
     }
 
     public String getVodId(String id) {
-        return id + getPath() + "/" + getName();
+        return id + "/" + getName();
     }
 
     public String getPic(String pic) {
